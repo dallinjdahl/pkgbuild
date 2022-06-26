@@ -1,0 +1,5 @@
+post_install() {
+	echo
+	echo "Make sure to add /usr/share/neatroff/font to GS_FONTPATH"
+	echo
+}

@@ -1,0 +1,32 @@
+pkgname=neatmkfn-git
+pkgver=20210817.r1.g799342c
+pkgrel=1
+pkgdesc='Modernized troff clone: font generator'
+arch=(i686 x86_64 armv7h aarch64)
+license=(unknown)
+makedepends=(git)
+provides=(neatmkfn)
+conflicts=(neatmkfn)
+source=(git+https://github.com/aligrudi/neatmkfn.git)
+sha256sums=(SKIP)
+
+pkgver() {
+	cd "$srcdir/neatmkfn"
+	git describe --long --tags | sed 's/\([^-]*-g\)/r\1/;s/-/./g'
+}
+
+prepare() {
+	cd "$srcdir/neatmkfn"
+	sed -i 's:\./mkfn:neatmkfn:g' gen.sh
+}
+
+build() {
+	cd "$srcdir/neatmkfn"
+	make
+}
+
+package() {
+	cd "$srcdir/neatmkfn"
+	install -Dm755 mkfn "$pkgdir/usr/bin/neatmkfn"
+	install -Dm755 gen.sh "$pkgdir/usr/bin/neatgenfn"
+}

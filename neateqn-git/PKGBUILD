@@ -1,0 +1,26 @@
+pkgname=neateqn-git
+pkgver=20210817.r4.g564d339
+pkgrel=1
+pkgdesc='Modernized troff clone: eqn preprocessor'
+arch=(i686 x86_64 armv7h aarch64)
+license=(unknown)
+makedepends=(git)
+provides=(neateqn)
+conflicts=(neateqn)
+source=(git+https://github.com/aligrudi/neateqn.git)
+sha256sums=(SKIP)
+
+pkgver() {
+	cd "$srcdir/neateqn"
+	git describe --long --tags | sed 's/\([^-]*-g\)/r\1/;s/-/./g'
+}
+
+build() {
+	cd "$srcdir/neateqn"
+	make
+}
+
+package() {
+	cd "$srcdir/neateqn"
+	install -Dm755 eqn "$pkgdir/usr/bin/neateqn"
+}

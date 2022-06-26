@@ -1,0 +1,30 @@
+pkgname=neatp9-git
+pkgver=r90.a0e8396
+pkgrel=1
+pkgdesc='Ports of Plan 9 pic and tbl for use with Neatroff'
+arch=(i686 x86_64 armv7h aarch64)
+license=(unknown)
+makedepends=(git)
+provides=(9pic 9tbl)
+conflicts=(9pic 9tbl)
+source=(git+https://github.com/aligrudi/troffp9.git)
+sha256sums=(SKIP)
+
+pkgver() {
+	cd "$srcdir/troffp9"
+	printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+}
+
+build() {
+	cd "$srcdir/troffp9/pic"
+	make
+	cd "$srcdir/troffp9/tbl"
+	make
+}
+
+package() {
+	cd "$srcdir/troffp9/pic"
+	install -Dm755 pic "$pkgdir/usr/bin/9pic"
+	cd "$srcdir/troffp9/tbl"
+	install -Dm755 tbl "$pkgdir/usr/bin/9tbl"
+}

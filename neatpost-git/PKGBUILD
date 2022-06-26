@@ -1,0 +1,27 @@
+pkgname=neatpost-git
+pkgver=20210817.r1.ga79e7c4
+pkgrel=1
+pkgdesc='Modernized troff clone: PS postprocessor'
+arch=(i686 x86_64 armv7h aarch64)
+license=(unknown)
+makedepends=(git)
+provides=(neatpost)
+conflicts=(neatpost)
+source=(git+https://github.com/aligrudi/neatpost.git)
+sha256sums=(SKIP)
+
+pkgver() {
+	cd "$srcdir/neatpost"
+	git describe --long --tags | sed 's/\([^-]*-g\)/r\1/;s/-/./g'
+}
+
+build() {
+	cd "$srcdir/neatpost"
+	make FDIR=/usr/share/neatroff
+}
+
+package() {
+	cd "$srcdir/neatpost"
+	install -Dm755 post "$pkgdir/usr/bin/neatpost"
+	install -Dm755 pdf "$pkgdir/usr/bin/neatpdf"
+}

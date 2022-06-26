@@ -1,0 +1,14 @@
+pkgname=neatsuite-git
+pkgver=1
+pkgrel=1
+pkgdesc='Modernized troff clone: meta package'
+arch=(i686 x86_64 armv7h aarch64)
+license=(unknown)
+depends=(neatroff-git
+	neatpost-git
+	neatmkfn-git
+	neatrefer-git
+	neatsup-git
+	neatfonts
+	neateqn-git
+	neatp9-git)

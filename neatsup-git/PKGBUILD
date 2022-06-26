@@ -1,0 +1,31 @@
+pkgname=neatsup-git
+pkgver=20210817.r16.g1da8ac5
+pkgrel=1
+pkgdesc='Modernized troff clone: supplementary files'
+arch=(i686 x86_64 armv7h aarch64)
+license=(unknown)
+makedepends=(git)
+provides=(neatsoin)
+conflicts=(neatsoin)
+source=(git+https://github.com/aligrudi/neatroff_make.git)
+sha256sums=(SKIP)
+
+pkgver() {
+	cd "$srcdir/neatroff_make"
+	git describe --long --tags | sed 's/\([^-]*-g\)/r\1/;s/-/./g'
+}
+
+build() {
+	cd "$srcdir/neatroff_make/soin"
+	make
+}
+
+package() {
+	cd "$srcdir/neatroff_make/man"
+	install -Dm644 -t "$pkgdir/usr/share/man/man1" *.1
+	cd "$srcdir/neatroff_make/tmac"
+	install -Dm644 -t "$pkgdir/usr/share/neatroff/tmac" tmac.* strings.mm NOTICE
+	install -Dm644 -t "$pkgdir/usr/share/neatroff/tmac/me" me/*
+	cd "$srcdir/neatroff_make/soin"
+	install -Dm755 soin "$pkgdir/usr/bin/neatsoin"
+}

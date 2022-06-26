@@ -1,0 +1,26 @@
+pkgname=neatroff-git
+pkgver=20210817.r4.g0d691c3
+pkgrel=1
+pkgdesc='Modernized troff clone'
+arch=(i686 x86_64 armv7h aarch64)
+license=(unknown)
+makedepends=(git)
+provides=(neatroff)
+conflicts=(neatroff)
+source=(git+https://github.com/aligrudi/neatroff.git)
+sha256sums=(SKIP)
+
+pkgver() {
+	cd "$srcdir/neatroff"
+	git describe --long --tags | sed 's/\([^-]*-g\)/r\1/;s/-/./g'
+}
+
+build() {
+	cd "$srcdir/neatroff"
+	make FDIR=/usr/share/neatroff MDIR=/usr/share/neatroff/tmac
+}
+
+package() {
+	cd "$srcdir/neatroff"
+	install -Dm755 roff "$pkgdir/usr/bin/neatroff"
+}

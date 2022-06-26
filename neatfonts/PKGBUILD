@@ -1,0 +1,81 @@
+pkgname=neatfonts
+pkgver=20170801.1
+pkgrel=1
+pkgdesc='Modernized troff clone (man pages and fonts)'
+arch=(any)
+license=(unknown)
+makedepends=(git neatmkfn)
+source=(https://github.com/ArtifexSoftware/urw-base35-fonts/archive/20170801.1.tar.gz
+	https://www.ams.org/arc/tex/amsfonts.zip)
+sha256sums=(SKIP SKIP)
+install=install
+
+prepare() {
+	mkdir "$srcdir/font"
+	cd "$srcdir/font"
+	mv ../urw-base35*/fonts/*.t1 .
+	mv ../urw-base35*/fonts/*.afm .
+	for x in ../fonts/afm/public/amsfonts/cm/*.afm
+	do
+		cp $x `basename $x .afm | tr a-z A-Z`.afm
+	done
+	for x in ../fonts/type1/public/amsfonts/cm/*.pfb
+	do
+		mv $x `basename $x .pfb | tr a-z A-Z`.pfb
+	done
+	cat >Fontmap <<eof
+% Fontmap for urw-core35 fonts
+/Times-Roman	/NimbusRoman-Regular ;
+/Times-Italic	/NimbusRoman-Italic ;
+/Times-Bold	/NimbusRoman-Bold ;
+/Times-BoldItalic	/NimbusRoman-BoldItalic ;
+/Symbol	/StandardSymbolsPS ;
+/AvantGarde-Book	/URWGothic-Book ;
+/AvantGarde-BookOblique	/URWGothic-BookOblique ;
+/AvantGarde-Demi	/URWGothic-Demi ;
+/AvantGarde-DemiOblique	/URWGothic-DemiOblique ;
+/Helvetica	/NimbusSans-Regular ;
+/Helvetica-Oblique	/NimbusSans-Oblique ;
+/Helvetica-Bold	/NimbusSans-Bold ;
+/Helvetica-BoldOblique	/NimbusSans-BoldOblique ;
+/Helvetica-Narrow	/NimbusSansNarrow-Regular ;
+/Helvetica-Narrow-Oblique	/NimbusSansNarrow-Oblique ;
+/Helvetica-Narrow-Bold	/NimbusSansNarrow-Bold ;
+/Helvetica-Narrow-BoldOblique	/NimbusSansNarrow-BdOblique ;
+/Bookman-Light	/URWBookman-Light ;
+/Bookman-LightItalic	/URWBookman-LightItalic ;
+/Bookman-Demi	/URWBookman-Demi ;
+/Bookman-DemiItalic	/URWBookman-DemiItalic ;
+/NewCenturySchlbk-Roman	/C059-Roman ;
+/NewCenturySchlbk-Italic	/C059-Italic ;
+/NewCenturySchlbk-Bold	/C059-Bold ;
+/NewCenturySchlbk-BoldItalic	/C059-BdIta ;
+/Palatino-Roman	/P052-Roman ;
+/Palatino-Roman	/P052-Roman ;
+/Palatino-Italic	/P052-Italic ;
+/Palatino-Bold	/P052-Bold ;
+/Palatino-BoldItalic	/P052-BoldItalic ;
+/Courier	/NimbusMonoPS-Regular ;
+/Courier-Oblique	/NimbusMonoPS-Italic ;
+/Courier-Bold	/NimbusMonoPS-Bold ;
+/Courier-BoldOblique	/NimbusMonoPS-BoldItalic ;
+/ZapfChancery-MediumItalic	/Z003-MediumItalic ;
+eof
+}
+
+build() {
+	neatgenfn "$srcdir/font" "$srcdir/devutf"
+	for f in "$srcdir/devutf"/*
+	do
+		sed "/^fontpath /s=$srcdir/font=/usr/share/neatroff/font=" <$f >.fd.tmp
+		mv .fd.tmp $f
+	done
+}
+
+package() {
+	cd "$srcdir/font"
+	install -Dm644 -t "$pkgdir/usr/share/neatroff/font" *
+	cd "$srcdir/devutf"
+	install -Dm644 -t "$pkgdir/usr/share/neatroff/devutf" *
+}
+
