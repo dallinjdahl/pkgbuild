@@ -1,4 +1,4 @@
-pkgname=raktizis-rc-git
+pkgname=rakitzis-rc-git
 pkgver=1.7.4.r117.g8ca9ab1
 pkgrel=1
 pkgdesc='Byron Rakitzis implementation of the rc shell'
